@@ -13,7 +13,6 @@ Players spin a wheel to earn rewards (Gold, Items, Weapons) while navigating thr
 ## 🚀 Key Features
 * **Dynamic Economy Scaling:** Rewards are not static. Base amounts increase linearly based on the current zone level, ensuring late-game spins remain exciting.
 * **Scriptable Object Architecture:** All rewards are data-driven. Adding a new item, adjusting its drop rate, or changing its zone multiplier requires zero code changes.
-* **Mockup Ad Integration:** Ready-to-connect structure for Rewarded Ads (AdMob/AppLovin). Currently implemented as a functional mock button that triggers the `Revive()` flow.
 * **Robust Audio System:** A Singleton `AudioManager` handles continuous looping sounds (wheel spinning), UI interactions, and win/lose states without overlapping issues.
 
 ## 🛠️ Technical Details & UI Standards
