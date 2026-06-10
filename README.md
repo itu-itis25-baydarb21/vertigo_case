@@ -36,7 +36,11 @@ The project is divided into single-responsibility managers to ensure clean, read
 
 ## 🎮 How to Test
 1. Clone the repository.
-2. Open the project in **Unity 2022.3 LTS** (or newer).
+2. Open the project in **Unity 2021.3.45f2 LTS**.
 3. Ensure the UI Sprite Atlas is packed (`Edit -> Project Settings -> Editor -> Sprite Packer: Always Enabled`).
 4. Open the main scene and press Play.
-5. Watch the Console for internal test logs (e.g., Video Ad Mockup triggers).
+
+## PS
+1. I put revive for free for testing to ease your testing phase.
+2. Also if you want to use revive with the money you need to get money from the wheel and get to your main account with leave button after that you can use that money to revive.
+3. Lastly, There is a script called AccountManager in the WheelManager gameobject. You can switch the Reset Save on the Start. Its simply reset the money you owned when the game stops.
