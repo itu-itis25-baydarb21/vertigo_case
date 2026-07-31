@@ -1477,6 +1477,10 @@ GameObject:
   - component: {fileID: 673776941}
   - component: {fileID: 673776940}
   - component: {fileID: 673776943}
+  - component: {fileID: 673776944}
+  - component: {fileID: 673776945}
+  - component: {fileID: 673776946}
+  - component: {fileID: 673776947}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1583,28 +1587,69 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edbb66ebb6d1bcf4c84dabe2d72344b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &673776944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673776938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2096f09efa40799488337af205be7acd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   ui_button_spin: {fileID: 1522186648}
   ui_button_leave: {fileID: 555915128}
-  ui_text_zone_value: {fileID: 323454758}
-  ui_text_header_value: {fileID: 644561695}
-  ui_text_total_gold_value: {fileID: 390543748}
-  ui_text_info_value: {fileID: 1607532478}
-  ui_panel_bomb_popup: {fileID: 637497341}
   ui_button_giveup: {fileID: 307504754}
-  ui_button_revive: {fileID: 1029204826}
   ui_bomb_revive_video_button: {fileID: 1997791521}
-  wheelManager: {fileID: 2068300408}
-  inventoryManager: {fileID: 2068300410}
-  zoneManager: {fileID: 1257454602}
-  accountManager: {fileID: 2068300411}
+  ui_button_revive: {fileID: 1029204826}
+--- !u!114 &673776945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673776938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 418b77e6d8e46b14688968e61a7cf306, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ui_text_total_gold_value: {fileID: 390543748}
+  ui_panel_bomb_popup: {fileID: 637497341}
+  ui_button_revive: {fileID: 1029204826}
+--- !u!114 &673776946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673776938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325b2816ad32f09498794761f9af7709, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   ui_panel_reward_popup: {fileID: 1607104536}
   ui_image_shine: {fileID: 7437538}
   ui_image_reward_icon: {fileID: 2118795305}
   ui_text_reward_popup: {fileID: 1494838259}
-  reviveCurrency: {fileID: 11400000, guid: 38624188a297caf4f9497c5bb6a302d1, type: 2}
-  reviveCost: 100
-  ui_panel_inventory_content: {fileID: 980268708}
-  inventorySlotPrefab: {fileID: 2824714458646079136, guid: 9f895980f3be6d349849a7937670c543, type: 3}
+--- !u!114 &673776947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673776938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 070930aeefeab884aab05500d0c2740d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ui_text_zone_value: {fileID: 323454758}
+  ui_text_header_value: {fileID: 644561695}
+  ui_text_info_value: {fileID: 1607532478}
 --- !u!1 &734824627
 GameObject:
   m_ObjectHideFlags: 0
@@ -2374,8 +2419,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef3cc2015b5ff184ea57c6df59bfe4bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentZone: 1
-  currentZoneType: 0
 --- !u!4 &1257454603
 Transform:
   m_ObjectHideFlags: 0
@@ -2878,7 +2921,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 44.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3222,6 +3265,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1583799354}
   m_CullTransparentMesh: 1
+--- !u!1 &1596900073
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1596900076}
+  - component: {fileID: 1596900075}
+  - component: {fileID: 1596900074}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1596900074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596900073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7659ad21c0e16ab4c8448157a64a54ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1596900075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596900073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0c539818afef488512f71e7d67376, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1596900076
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596900073}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1607104536
 GameObject:
   m_ObjectHideFlags: 0
@@ -3917,8 +4017,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slicePrefab: {fileID: 2001345129856733561, guid: ffa746ce91d8e594d82bc913fdfbe7c3, type: 3}
   wheelSpinner: {fileID: 2047791863}
-  totalSlices: 8
-  sliceRadius: 175
   normalRewardsPool:
   - {fileID: 11400000, guid: 46d0587b0eeb3414f8446c9b7356965b, type: 2}
   - {fileID: 11400000, guid: 38624188a297caf4f9497c5bb6a302d1, type: 2}
@@ -3958,19 +4056,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 38624188a297caf4f9497c5bb6a302d1, type: 2}
   - {fileID: 11400000, guid: 46d0587b0eeb3414f8446c9b7356965b, type: 2}
   bombData: {fileID: 11400000, guid: 6bb0e7b6083d7434b9d9b91bb2437100, type: 2}
-  spinDuration: 3.5
-  spinRevolutions: 5
   spinnerImage: {fileID: 2047791864}
   indicatorImage: {fileID: 1413595705}
-  bronzeSpinner: {fileID: 21300000, guid: d4f90c924f9b74d46b7ad68694f6d5ee, type: 3}
-  silverSpinner: {fileID: 21300000, guid: b19edee7e1360fd4e9474878ffbb487a, type: 3}
-  goldSpinner: {fileID: 21300000, guid: ecd9f9481b634e4418dd1b36d8b4cd24, type: 3}
-  zoneManager: {fileID: 1257454602}
-  inventoryManager: {fileID: 2068300410}
-  uiManager: {fileID: 673776943}
-  bronzeIndicator: {fileID: 21300000, guid: 222d16e649f3d2a49b92bb1be82ae0a2, type: 3}
-  silverIndicator: {fileID: 21300000, guid: 040fecbf758bcf74e8ed32f3ac4771e2, type: 3}
-  goldIndicator: {fileID: 21300000, guid: ce723a9124ed5464dbd19b0e8f6cc7ac, type: 3}
+  zoneVisualConfigs:
+  - zoneType: 0
+    spinnerSprite: {fileID: 21300000, guid: d4f90c924f9b74d46b7ad68694f6d5ee, type: 3}
+    indicatorSprite: {fileID: 21300000, guid: 222d16e649f3d2a49b92bb1be82ae0a2, type: 3}
+  - zoneType: 1
+    spinnerSprite: {fileID: 21300000, guid: b19edee7e1360fd4e9474878ffbb487a, type: 3}
+    indicatorSprite: {fileID: 21300000, guid: 040fecbf758bcf74e8ed32f3ac4771e2, type: 3}
+  - zoneType: 2
+    spinnerSprite: {fileID: 21300000, guid: ecd9f9481b634e4418dd1b36d8b4cd24, type: 3}
+    indicatorSprite: {fileID: 21300000, guid: ce723a9124ed5464dbd19b0e8f6cc7ac, type: 3}
 --- !u!4 &2068300409
 Transform:
   m_ObjectHideFlags: 0

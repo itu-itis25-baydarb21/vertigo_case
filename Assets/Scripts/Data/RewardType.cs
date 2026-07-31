@@ -1,8 +1,11 @@
-public enum RewardType
+namespace Game.Data
 {
-    Currency,      
-    Chest,         
-    SpecialItem,   
-    WeaponPoint,   
-    Bomb         
+    public enum RewardType
+    {
+        Currency,      
+        Chest,         
+        SpecialItem,   
+        WeaponPoint,   
+        Bomb         
+    }
 }

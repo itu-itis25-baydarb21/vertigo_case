@@ -1,204 +1,146 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening; 
-using UnityEngine.UI; 
+using UnityEngine.UI;
+using Game.Data;
+using Game.Interfaces;
+using Game.Core;
+using Game.Utilities;
+using Game.Zones;
 
-public class WheelManager : MonoBehaviour
+namespace Game.Wheel
 {
-    [Header("References")]
-    public WheelSlice slicePrefab; 
-    public Transform wheelSpinner;
-
-    [Header("Settings")]
-    public int totalSlices = 8;
-    public float sliceRadius = 150f;
-
-    [Header("Data Pools")]
-    public List<RewardData> normalRewardsPool;
-    public List<RewardData> superRewardsPool;
-    public RewardData bombData;
-
-    [Header("Spin Animation Settings")]
-    public float spinDuration = 3.5f;
-    public int spinRevolutions = 5;
-    private bool isSpinning = false;
-
-    [Header("Wheel Visuals (Images)")]
-    public Image spinnerImage;
-    public Image indicatorImage;
-
-    [Header("Wheel Sprites")]
-    public Sprite bronzeSpinner;
-    public Sprite silverSpinner;
-    public Sprite goldSpinner;
-
-    [Header("Managers")]
-    public ZoneManager zoneManager;
-    public InventoryManager inventoryManager; 
-    public UIManager uiManager;
-
-
-    public Sprite bronzeIndicator;
-    public Sprite silverIndicator;
-    public Sprite goldIndicator;
-
-    private List<WheelSlice> activeSlices = new List<WheelSlice>();
-
-
-    public void GenerateWheel(int currentZone, ZoneType zoneType)
+    [System.Serializable]
+    public struct ZoneVisualConfig
     {
-        ClearWheel();
-
-        UpdateWheelVisuals(zoneType);
-
-        float angleStep = 360f / totalSlices;
-
-        for (int i = 0; i < totalSlices; i++)
-        {
-            WheelSlice newSlice = Instantiate(slicePrefab, wheelSpinner);
-
-            float angle = i * angleStep;
-            float angleRad = angle * Mathf.Deg2Rad;
-
-            Vector3 targetPos = new Vector3(Mathf.Sin(angleRad), Mathf.Cos(angleRad), 0) * sliceRadius;
-            newSlice.transform.localPosition = targetPos;
-
-            newSlice.transform.localRotation = Quaternion.Euler(0, 0, -angle);
-
-            RewardData selectedData;
-
-            if (zoneType == ZoneType.Normal && i == 0)
-            {
-                selectedData = bombData; 
-            }
-            else
-            {
-                List<RewardData> pool = (zoneType == ZoneType.Super) ? superRewardsPool : normalRewardsPool;
-                selectedData = pool[Random.Range(0, pool.Count)];
-            }
-
-            newSlice.SetupSlice(selectedData, currentZone);
-            activeSlices.Add(newSlice);
-        }
+        public ZoneType zoneType;
+        public Sprite spinnerSprite;
+        public Sprite indicatorSprite;
     }
 
-    private void UpdateWheelVisuals(ZoneType type)
+    public class WheelManager : MonoBehaviour, IWheelAnimator
     {
-        if (spinnerImage == null || indicatorImage == null) return;
+        [Header("References")]
+        public WheelSlice slicePrefab; 
+        public Transform wheelSpinner;
 
-        switch (type)
+        [Header("Data Pools")]
+        public List<RewardData> normalRewardsPool;
+        public List<RewardData> superRewardsPool;
+        public RewardData bombData;
+
+        [Header("Wheel Visuals (Images)")]
+        public Image spinnerImage;
+        public Image indicatorImage;
+
+        [Header("Wheel Visual Configurations")]
+        public List<ZoneVisualConfig> zoneVisualConfigs = new List<ZoneVisualConfig>();
+
+        private List<WheelSlice> activeSlices = new List<WheelSlice>();
+
+        private void Awake()
         {
-            case ZoneType.Normal:
-                spinnerImage.sprite = bronzeSpinner;
-                indicatorImage.sprite = bronzeIndicator;
-                break;
-            case ZoneType.Safe:
-                spinnerImage.sprite = silverSpinner;
-                indicatorImage.sprite = silverIndicator;
-                break;
-            case ZoneType.Super:
-                spinnerImage.sprite = goldSpinner;
-                indicatorImage.sprite = goldIndicator;
-                break;
+            ServiceLocator.Register<IWheelAnimator>(this);
         }
-    }
 
-    public void SpinWheel()
-    {
-        if (isSpinning) return;
-        isSpinning = true;
-
-        int winningIndex = Random.Range(0, totalSlices);
-        WheelSlice winningSlice = activeSlices[winningIndex];
-
-        float angleStep = 360f / totalSlices;
-
-        float targetAngle = winningIndex * angleStep;
-
-        float finalRotation = targetAngle - (360f * spinRevolutions);
-
-        if (AudioManager.Instance != null) AudioManager.Instance.StartSpinSound();
-
-
-        wheelSpinner.DORotate(new Vector3(0, 0, finalRotation), spinDuration, RotateMode.FastBeyond360)
-            .SetEase(Ease.OutCirc) 
-            .OnComplete(() =>
+        private void Start()
+        {
+            var zoneService = ServiceLocator.Get<IZoneService>();
+            if (zoneService != null)
             {
-                if (AudioManager.Instance != null)
+                zoneService.OnZoneChanged += GenerateWheel;
+                GenerateWheel(zoneService.CurrentZone, zoneService.CurrentZoneType);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            var zoneService = ServiceLocator.Get<IZoneService>();
+            if (zoneService != null)
+            {
+                zoneService.OnZoneChanged -= GenerateWheel;
+            }
+        }
+
+        public void GenerateWheel(int currentZone, ZoneType zoneType)
+        {
+            if (wheelSpinner != null)
+            {
+                wheelSpinner.localEulerAngles = Vector3.zero;
+            }
+            ClearWheel();
+            UpdateWheelVisuals(zoneType);
+
+            float angleStep = 360f / WheelConstants.TOTAL_SLICES;
+
+            for (int i = 0; i < WheelConstants.TOTAL_SLICES; i++)
+            {
+                WheelSlice newSlice = Instantiate(slicePrefab, wheelSpinner);
+
+                float angle = i * angleStep;
+                float angleRad = angle * Mathf.Deg2Rad;
+
+                Vector3 targetPos = new Vector3(Mathf.Sin(angleRad), Mathf.Cos(angleRad), 0) * WheelConstants.SLICE_RADIUS;
+                newSlice.transform.localPosition = targetPos;
+                newSlice.transform.localRotation = Quaternion.Euler(0, 0, -angle);
+
+                RewardData selectedData;
+
+                if (zoneType == ZoneType.Normal && i == 0)
                 {
-                    AudioManager.Instance.StopSpinSound();
+                    selectedData = bombData; 
                 }
-                isSpinning = false;
-                ProcessReward(winningSlice);
-            });
-    }
-
-    private void ProcessReward(WheelSlice wonSlice)
-    {
-        if (wonSlice.sliceData.type == RewardType.Bomb)
-        {
-            if (uiManager != null)
-            {
-                uiManager.ShowBombPopup();
-            }
-        }
-        else
-        {
-            RewardData data = wonSlice.sliceData;
-            int currentZone = zoneManager.currentZone;
-            ZoneType currentZoneType = zoneManager.GetZoneType(currentZone);
-
-            float zoneProgression = 1f + (currentZone * data.zoneMultiplier);
-            int finalAmount = Mathf.RoundToInt(data.baseAmount * zoneProgression);
-
-            if (currentZoneType == ZoneType.Safe)
-            {
-                finalAmount = Mathf.RoundToInt(finalAmount * 2f);
-            }
-            else if (currentZoneType == ZoneType.Super)
-            {
-                finalAmount = Mathf.RoundToInt(finalAmount * 10f);
-            }
-
-            finalAmount = Mathf.Max(data.baseAmount, finalAmount); 
-
-            if (inventoryManager != null) inventoryManager.AddReward(data, finalAmount);
-
-            if (uiManager != null)
-            {
-                uiManager.ShowRewardPopup(data.icon, data.rewardName, finalAmount, () =>
+                else
                 {
-                    zoneManager.MoveToNextZone();
-                });
+                    List<RewardData> pool = (zoneType == ZoneType.Super) ? superRewardsPool : normalRewardsPool;
+                    selectedData = pool[Random.Range(0, pool.Count)];
+                }
+
+                newSlice.SetupSlice(selectedData, currentZone);
+                activeSlices.Add(newSlice);
             }
-            else
+        }
+
+        private void UpdateWheelVisuals(ZoneType type)
+        {
+            if (spinnerImage == null || indicatorImage == null) return;
+
+            var config = zoneVisualConfigs.Find(c => c.zoneType == type);
+            if (config.spinnerSprite != null)
             {
-                zoneManager.MoveToNextZone();
+                spinnerImage.sprite = config.spinnerSprite;
+                indicatorImage.sprite = config.indicatorSprite;
             }
         }
-    }
 
-    private void ClearWheel()
-    {
-        foreach (var slice in activeSlices)
+        public void SpinWheel(System.Action<RewardData> onComplete)
         {
-            Destroy(slice.gameObject);
-        }
-        activeSlices.Clear();
-    }
-    private void OnEnable()
-    {
-        if (zoneManager != null)
-        {
-            zoneManager.OnZoneChanged += GenerateWheel;
-        }
-    }
+            int winningIndex = Random.Range(0, WheelConstants.TOTAL_SLICES);
+            WheelSlice winningSlice = activeSlices[winningIndex];
 
-    private void OnDisable()
-    {
-        if (zoneManager != null)
+            float angleStep = 360f / WheelConstants.TOTAL_SLICES;
+            float targetAngle = winningIndex * angleStep;
+            float finalRotation = targetAngle - (360f * WheelConstants.SPIN_REVOLUTIONS);
+
+            var audioService = ServiceLocator.Get<IAudioService>();
+            if (audioService != null) audioService.StartSpinSound();
+
+            wheelSpinner.DORotate(new Vector3(0, 0, finalRotation), WheelConstants.SPIN_DURATION, RotateMode.FastBeyond360)
+                .SetEase(Ease.InOutQuart) 
+                .OnComplete(() =>
+                {
+                    if (audioService != null) audioService.StopSpinSound();
+                    onComplete?.Invoke(winningSlice.sliceData);
+                });
+        }
+
+        private void ClearWheel()
         {
-            zoneManager.OnZoneChanged -= GenerateWheel;
+            foreach (var slice in activeSlices)
+            {
+                Destroy(slice.gameObject);
+            }
+            activeSlices.Clear();
         }
     }
 }

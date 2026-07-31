@@ -1,54 +1,63 @@
 using System;
 using UnityEngine;
+using Game.Interfaces;
+using Game.Core;
 
-public class AccountManager : MonoBehaviour
+namespace Game.Core
 {
-    [Header("Debug Settings")]
-    [Tooltip("Eğer işaretliyse, oyun her başladığında eski kayıtları siler ve kasayı sıfırlar.")]
-    public bool resetSaveOnStart = true; 
-
-    public Action<int> OnTotalGoldChanged;
-
-    private int totalGold = 0;
-
-    private void Start()
+    public class AccountManager : MonoBehaviour, IAccountService
     {
-        if (resetSaveOnStart)
+        [Header("Debug Settings")]
+        [Tooltip("Eğer işaretliyse, oyun her başladığında eski kayıtları siler ve kasayı sıfırlar.")]
+        public bool resetSaveOnStart = true; 
+
+        public event Action<int> OnTotalGoldChanged;
+
+        private int totalGold = 0;
+
+        private void Awake()
         {
-            PlayerPrefs.DeleteKey("TotalGold");
-            PlayerPrefs.Save();
+            ServiceLocator.Register<IAccountService>(this);
         }
 
-        totalGold = PlayerPrefs.GetInt("TotalGold", 0);
-
-        OnTotalGoldChanged?.Invoke(totalGold);
-    }
-
-    public int GetTotalGold()
-    {
-        return totalGold;
-    }
-
-    public void AddGold(int amount)
-    {
-        totalGold += amount;
-        PlayerPrefs.SetInt("TotalGold", totalGold);
-        PlayerPrefs.Save();
-
-        OnTotalGoldChanged?.Invoke(totalGold);
-    }
-
-    public bool ConsumeGold(int amount)
-    {
-        if (totalGold >= amount)
+        private void Start()
         {
-            totalGold -= amount;
+            if (resetSaveOnStart)
+            {
+                PlayerPrefs.DeleteKey("TotalGold");
+                PlayerPrefs.Save();
+            }
+
+            totalGold = PlayerPrefs.GetInt("TotalGold", 0);
+            OnTotalGoldChanged?.Invoke(totalGold);
+        }
+
+        public int GetTotalGold()
+        {
+            return totalGold;
+        }
+
+        public void AddGold(int amount)
+        {
+            totalGold += amount;
             PlayerPrefs.SetInt("TotalGold", totalGold);
             PlayerPrefs.Save();
 
             OnTotalGoldChanged?.Invoke(totalGold);
-            return true;
         }
-        return false;
+
+        public bool ConsumeGold(int amount)
+        {
+            if (totalGold >= amount)
+            {
+                totalGold -= amount;
+                PlayerPrefs.SetInt("TotalGold", totalGold);
+                PlayerPrefs.Save();
+
+                OnTotalGoldChanged?.Invoke(totalGold);
+                return true;
+            }
+            return false;
+        }
     }
 }

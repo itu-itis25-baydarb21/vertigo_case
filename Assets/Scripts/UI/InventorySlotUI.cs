@@ -1,15 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Game.Utilities;
 
-public class InventorySlotUI : MonoBehaviour
+namespace Game.UI
 {
-    public Image itemIcon;
-    public TextMeshProUGUI itemAmountText;
-
-    public void SetupSlot(Sprite icon, int amount)
+    public class InventorySlotUI : MonoBehaviour
     {
-        itemIcon.sprite = icon;
-        itemAmountText.text = $"x{amount}";
+        public Image itemIcon;
+        public TextMeshProUGUI itemAmountText;
+
+        public void SetupSlot(Sprite icon, int amount)
+        {
+            if (itemIcon != null) itemIcon.sprite = icon;
+            if (itemAmountText != null) itemAmountText.text = RewardFormatter.FormatAmount(amount);
+        }
     }
 }

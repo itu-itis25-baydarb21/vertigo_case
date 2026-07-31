@@ -1,53 +1,67 @@
 using UnityEngine;
 using System;
+using Game.Interfaces;
+using Game.Core;
+using Game.Utilities;
 
-public enum ZoneType
+namespace Game.Zones
 {
-    Normal, 
-    Safe,   
-    Super  
-}
-
-public class ZoneManager : MonoBehaviour
-{
-    public int currentZone = 1;
-    public ZoneType currentZoneType;
-
-    public Action<int, ZoneType> OnZoneChanged;
-
-    private void Start()
+    public class ZoneManager : MonoBehaviour, IZoneService
     {
-        UpdateZoneState();
-    }
+        public int CurrentZone { get; private set; } = 1;
+        public ZoneType CurrentZoneType { get; private set; }
+        
+        public IZoneStrategy CurrentStrategy { get; private set; }
 
-    public void MoveToNextZone()
-    {
-        currentZone++;
-        UpdateZoneState();
-    }
+        public event Action<int, ZoneType> OnZoneChanged;
 
-    public void ResetZone()
-    {
-        currentZone = 1;
-        UpdateZoneState();
-    }
+        private void Awake()
+        {
+            ServiceLocator.Register<IZoneService>(this);
+        }
 
-    public void RefreshCurrentZone()
-    {
-        UpdateZoneState();
-    }
+        private void Start()
+        {
+            UpdateZoneState();
+        }
 
-    public ZoneType GetZoneType(int zoneNumber)
-    {
-        if (zoneNumber % 30 == 0) return ZoneType.Super;
-        if (zoneNumber % 5 == 0) return ZoneType.Safe;
-        return ZoneType.Normal;
-    }
+        public void MoveToNextZone()
+        {
+            CurrentZone++;
+            UpdateZoneState();
+        }
 
-    private void UpdateZoneState()
-    {
-        currentZoneType = GetZoneType(currentZone);
+        public void ResetZone()
+        {
+            CurrentZone = 1;
+            UpdateZoneState();
+        }
 
-        OnZoneChanged?.Invoke(currentZone, currentZoneType);
+        public void RefreshCurrentZone()
+        {
+            UpdateZoneState();
+        }
+
+        public ZoneType GetZoneType(int zoneNumber)
+        {
+            if (zoneNumber % GameConstants.SUPER_ZONE_INTERVAL == 0) return ZoneType.Super;
+            if (zoneNumber % GameConstants.SAFE_ZONE_INTERVAL == 0) return ZoneType.Safe;
+            return ZoneType.Normal;
+        }
+
+        private IZoneStrategy GetStrategyForZone(int zoneNumber)
+        {
+            if (zoneNumber % GameConstants.SUPER_ZONE_INTERVAL == 0) return new SuperZoneStrategy();
+            if (zoneNumber % GameConstants.SAFE_ZONE_INTERVAL == 0) return new SafeZoneStrategy();
+            return new NormalZoneStrategy();
+        }
+
+        private void UpdateZoneState()
+        {
+            CurrentZoneType = GetZoneType(CurrentZone);
+            CurrentStrategy = GetStrategyForZone(CurrentZone);
+
+            OnZoneChanged?.Invoke(CurrentZone, CurrentZoneType);
+        }
     }
 }

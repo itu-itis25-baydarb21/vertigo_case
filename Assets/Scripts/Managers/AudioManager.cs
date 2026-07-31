@@ -1,70 +1,64 @@
 using UnityEngine;
+using Game.Interfaces;
+using Game.Core;
 
-public class AudioManager : MonoBehaviour
+namespace Game.Audio
 {
-    public static AudioManager Instance;
-
-    [Header("Audio Sources")]
-    public AudioSource sfxSource; 
-    public AudioSource bgmSource; 
-    public AudioSource spinSource;
-
-    [Header("Audio Clips")]
-    public AudioClip spinTickClip;
-    public AudioClip winClip;
-    public AudioClip bombClip;
-    public AudioClip buttonClickClip;
-
-    private void Awake()
+    public class AudioManager : MonoBehaviour, IAudioService
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+        [Header("Audio Sources")]
+        public AudioSource sfxSource; 
+        public AudioSource bgmSource; 
+        public AudioSource spinSource;
 
-    public void StartSpinSound()
-    {
-        if (spinTickClip != null && spinSource != null)
+        [Header("Audio Clips")]
+        public AudioClip spinTickClip;
+        public AudioClip winClip;
+        public AudioClip bombClip;
+        public AudioClip buttonClickClip;
+
+        private void Awake()
         {
-            spinSource.clip = spinTickClip;
-            spinSource.loop = true;
-            spinSource.Play();
+            ServiceLocator.Register<IAudioService>(this);
         }
-    }
 
-    public void StopSpinSound()
-    {
-        if (spinSource != null)
+        public void StartSpinSound()
         {
-            spinSource.loop = false; 
-            spinSource.Stop(); 
+            if (spinTickClip != null && spinSource != null)
+            {
+                spinSource.clip = spinTickClip;
+                spinSource.loop = true;
+                spinSource.Play();
+            }
         }
-    }
 
-    public void PlaySFX(AudioClip clip)
-    {
-        if (clip != null && sfxSource != null)
+        public void StopSpinSound()
         {
-            
-            sfxSource.PlayOneShot(clip);
+            if (spinSource != null)
+            {
+                spinSource.loop = false; 
+                spinSource.Stop(); 
+            }
         }
-    }
 
-    public void PlayClick() => PlaySFX(buttonClickClip);
-    public void PlayWin() => PlaySFX(winClip);
-    public void PlayBomb() => PlaySFX(bombClip);
-
-    public void PlayTick()
-    {
-        if (spinTickClip != null && sfxSource != null)
+        public void PlaySFX(AudioClip clip)
         {
-            sfxSource.PlayOneShot(spinTickClip, 0.5f);
+            if (clip != null && sfxSource != null)
+            {
+                sfxSource.PlayOneShot(clip);
+            }
+        }
+
+        public void PlayClick() => PlaySFX(buttonClickClip);
+        public void PlayWin() => PlaySFX(winClip);
+        public void PlayBomb() => PlaySFX(bombClip);
+
+        public void PlayTick()
+        {
+            if (spinTickClip != null && sfxSource != null)
+            {
+                sfxSource.PlayOneShot(spinTickClip, 0.5f);
+            }
         }
     }
 }

@@ -1,30 +1,39 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
+using TMPro;
+using Game.Data;
+using Game.Utilities;
 
-public class WheelSlice : MonoBehaviour
+namespace Game.Wheel
 {
-    public RewardData sliceData;
-
-    [Header("UI References")]
-    public Image iconImage;
-    public TextMeshProUGUI amountText;
-
-    public void SetupSlice(RewardData data, int currentZone)
+    public class WheelSlice : MonoBehaviour
     {
-        sliceData = data;
-        iconImage.sprite = data.icon;
+        public Image iconImage;
+        public TextMeshProUGUI amountText;
+        public RewardData sliceData;
 
-        
-        int finalAmount = Mathf.RoundToInt(data.baseAmount * (1 + (currentZone * data.zoneMultiplier)));
-
-        if (data.type == RewardType.Bomb)
+        public void SetupSlice(RewardData data, int currentZone)
         {
-            amountText.text = "";
-        }
-        else
-        {
-            amountText.text = "x" + finalAmount.ToString();
+            sliceData = data;
+            
+            if (iconImage != null)
+                iconImage.sprite = data.icon;
+            
+            if (amountText != null)
+            {
+                if (data.type == RewardType.Bomb)
+                {
+                    amountText.text = "";
+                }
+                else
+                {
+                    // Use standard calculation but without zone type multipliers for base display (as original did)
+                    // Actually, the original did simple progression:
+                    float zoneProgression = 1f + (currentZone * data.zoneMultiplier);
+                    int displayAmount = Mathf.RoundToInt(data.baseAmount * zoneProgression);
+                    amountText.text = RewardFormatter.FormatAmount(displayAmount);
+                }
+            }
         }
     }
 }
