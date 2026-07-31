@@ -10,8 +10,8 @@ namespace Game.Utilities
 
     public static class WheelConstants
     {
-        public const float SPIN_DURATION = 3.5f;
-        public const int SPIN_REVOLUTIONS = 5;
+        public const float SPIN_DURATION = 6.0f;
+        public const int SPIN_REVOLUTIONS = 10;
         public const float SLICE_RADIUS = 175f;
         public const int TOTAL_SLICES = 8;
         public const float WHEEL_STOP_OFFSET = -360f;

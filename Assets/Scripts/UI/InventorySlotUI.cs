@@ -12,7 +12,11 @@ namespace Game.UI
 
         public void SetupSlot(Sprite icon, int amount)
         {
-            if (itemIcon != null) itemIcon.sprite = icon;
+            if (itemIcon != null) 
+            {
+                itemIcon.sprite = icon;
+                itemIcon.preserveAspect = true;
+            }
             if (itemAmountText != null) itemAmountText.text = RewardFormatter.FormatAmount(amount);
         }
     }

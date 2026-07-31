@@ -121,12 +121,11 @@ namespace Game.Wheel
             float angleStep = 360f / WheelConstants.TOTAL_SLICES;
             float targetAngle = winningIndex * angleStep;
             float finalRotation = targetAngle - (360f * WheelConstants.SPIN_REVOLUTIONS);
-
             var audioService = ServiceLocator.Get<IAudioService>();
             if (audioService != null) audioService.StartSpinSound();
 
             wheelSpinner.DORotate(new Vector3(0, 0, finalRotation), WheelConstants.SPIN_DURATION, RotateMode.FastBeyond360)
-                .SetEase(Ease.InOutQuart) 
+                .SetEase(Ease.OutBack, 0.45f) 
                 .OnComplete(() =>
                 {
                     if (audioService != null) audioService.StopSpinSound();
